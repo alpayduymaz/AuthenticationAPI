@@ -1,0 +1,15 @@
+C:\Users\alpay\source\repos\AuthenticationAPI\Entity\obj\Debug\net5.0\Entity.csproj.AssemblyReference.cache
+C:\Users\alpay\source\repos\AuthenticationAPI\Entity\obj\Debug\net5.0\Entity.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\alpay\source\repos\AuthenticationAPI\Entity\obj\Debug\net5.0\Entity.AssemblyInfoInputs.cache
+C:\Users\alpay\source\repos\AuthenticationAPI\Entity\obj\Debug\net5.0\Entity.AssemblyInfo.cs
+C:\Users\alpay\source\repos\AuthenticationAPI\Entity\obj\Debug\net5.0\Entity.csproj.CoreCompileInputs.cache
+C:\Users\alpay\source\repos\AuthenticationAPI\Entity\bin\Debug\net5.0\Entity.deps.json
+C:\Users\alpay\source\repos\AuthenticationAPI\Entity\bin\Debug\net5.0\Entity.runtimeconfig.json
+C:\Users\alpay\source\repos\AuthenticationAPI\Entity\bin\Debug\net5.0\Entity.runtimeconfig.dev.json
+C:\Users\alpay\source\repos\AuthenticationAPI\Entity\bin\Debug\net5.0\Entity.dll
+C:\Users\alpay\source\repos\AuthenticationAPI\Entity\bin\Debug\net5.0\ref\Entity.dll
+C:\Users\alpay\source\repos\AuthenticationAPI\Entity\bin\Debug\net5.0\Entity.pdb
+C:\Users\alpay\source\repos\AuthenticationAPI\Entity\obj\Debug\net5.0\Entity.dll
+C:\Users\alpay\source\repos\AuthenticationAPI\Entity\obj\Debug\net5.0\ref\Entity.dll
+C:\Users\alpay\source\repos\AuthenticationAPI\Entity\obj\Debug\net5.0\Entity.pdb
+C:\Users\alpay\source\repos\AuthenticationAPI\Entity\obj\Debug\net5.0\Entity.genruntimeconfig.cache
