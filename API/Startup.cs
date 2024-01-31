@@ -1,6 +1,7 @@
 using BLL.EntityCore.Abstract;
 using BLL.EntityCore.Concrete;
 using DAL;
+using DAL.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -31,6 +32,9 @@ namespace API
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserRoleRepository, UserRoleRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
+            services.AddScoped<IUserSessionRepository, UserSessionRepository>();
+            services.AddScoped<ICustomHttpContextAccessor, CustomHttpContextAccessor>();
+
 
             //services.AddScoped<ICarRepository, CarRepository>();
             //services.AddScoped<ICategoryRepository, CategoryRepository>();

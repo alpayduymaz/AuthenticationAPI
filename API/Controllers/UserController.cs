@@ -58,6 +58,7 @@ namespace API.Controllers
             return Ok(_UserRepository.FindBy(x => x.Id == id && x.DataStatus == Entity.Shared.DataStatus.Activated).FirstOrDefault());
         }
 
+        //Kullanici giriş kontrolu (authentication) için oluşturuldu
         /// <param name="login">Oluşturulacak User kaydının bilgisidir.</param>
         [HttpPost, Route("Authenticate")]
         public IActionResult Authenticate([FromBody] Login login)
@@ -115,7 +116,7 @@ namespace API.Controllers
             return Ok(responseLogin);
         }
 
-
+        //Sayfa geçişlerinde kullanıcı kaydı tutması için olusturuldu
         [HttpGet, Route("LoginUser")]
         public LoginUser LoginUser()
         {
