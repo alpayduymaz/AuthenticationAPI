@@ -11,7 +11,7 @@ namespace BLL.EntityCore.Abstract
 {
     public interface IUserRepository : IEntityBaseRepository<User>
     {
-
+        
         string BuildToken(Token userToken);
 
         string IndefiniteBuildToken(Token userToken);

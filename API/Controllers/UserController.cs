@@ -1,5 +1,9 @@
 ﻿using BLL.EntityCore.Abstract;
+using DAL.Middleware;
+using DTO.Shared;
+using DTO.Systems;
 using Entity.Models;
+using Entity.Shared;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -13,9 +17,17 @@ namespace API.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserRepository _UserRepository;
-        public UserController(IUserRepository UserRepository)
+        private readonly IUserRoleRepository _UserRoleRepository;
+        private readonly IUserSessionRepository _userSessionRepository;
+        private readonly ICustomHttpContextAccessor _customHttpContextAccessor;
+
+
+        public UserController(IUserRepository UserRepository, IUserRoleRepository UserRoleRepository, IUserSessionRepository userSessionRepository, ICustomHttpContextAccessor customHttpContextAccessor)
         {
+            _customHttpContextAccessor = customHttpContextAccessor;
             _UserRepository = UserRepository;
+            _UserRoleRepository = UserRoleRepository;
+            _userSessionRepository = userSessionRepository;
         }
 
         /// <summary>
@@ -46,6 +58,105 @@ namespace API.Controllers
             return Ok(_UserRepository.FindBy(x => x.Id == id && x.DataStatus == Entity.Shared.DataStatus.Activated).FirstOrDefault());
         }
 
+        /// <param name="login">Oluşturulacak User kaydının bilgisidir.</param>
+        [HttpPost, Route("Authenticate")]
+        public IActionResult Authenticate([FromBody] Login login)
+        {
+            var user = _UserRepository.FindBy(a =>
+                                              a.Email == login.Email
+                                           && a.Password == _UserRepository.PasswordHash(login.Password)
+                                           && a.DataStatus == DataStatus.Activated)
+                                      .Select(a => new
+                                      {
+                                          a.Id,
+                                          a.Name,
+                                          a.Surname,
+                                          a.Photo,
+                                          a.WorkYear,
+                                          a.SicilId
+                                      })
+                                      .FirstOrDefault();
+
+            if (user == null)
+                return BadRequest(new Response(false, "Mevcut parolanız ile girdiğiniz parolanız eşleşmedi."));
+
+            var userRoleId = _UserRoleRepository.FindBy(a => a.UserId == user.Id && a.DataStatus == DataStatus.Activated)
+                    .Select(a => a.RoleId).Distinct().ToArray();
+            var ipAdress = HttpContext.Connection.RemoteIpAddress.ToString();
+            var responseLogin = new ResponseLogin
+            {
+                Token = _UserRepository.BuildToken(new Token { UserId = user.Id, UserRoleId = userRoleId, FullName = user.Name + " " + user.Surname }),
+                LoginUser = new LoginUser
+                {
+                    Id = user.Id,
+                    Name = user.Name,
+                    Image = user.Photo,
+                    Surname = user.Surname,
+                    WorkYear = user.WorkYear,
+                    IpAddress = ipAdress,
+                    HostName = _UserRepository.GetHostName(ipAdress),
+                    //FirstFireLink = _pagePermissionRepository.GetFisrtFireLink(userRoleId)
+                    FirstFireLink = "/yonetim",
+                    SicilId = user.SicilId
+                }
+            };
+
+            _userSessionRepository.Add(new UserSession
+            {
+                UserId = user.Id,
+                Token = responseLogin.Token,
+                RemoteIpAddress = _customHttpContextAccessor.GetRemoteIpAddress(),
+                RequestHeader = _customHttpContextAccessor.GetHeaders(),
+                LoginAt = DateTime.Now
+            });
+
+            _userSessionRepository.Commit();
+
+            return Ok(responseLogin);
+        }
+
+
+        [HttpGet, Route("LoginUser")]
+        public LoginUser LoginUser()
+        {
+            var user = _UserRepository.FindBy(a => a.Id == _customHttpContextAccessor.GetUserId() && a.DataStatus != Entity.Shared.DataStatus.Deleted)
+                                        .Select(a => new
+                                        {
+                                            a.Id,
+                                            a.Name,
+                                            a.Surname,
+                                            a.Photo,
+                                            a.WorkYear,
+                                            SicilId = a.SicilId.Value,
+                                        })
+                                        .FirstOrDefault();
+
+            var ipAdress = HttpContext.Connection.RemoteIpAddress.ToString();
+            if (user != null)
+            {
+                var userRoleId = _UserRoleRepository.FindBy(a => a.UserId == user.Id && a.DataStatus == DataStatus.Activated)
+                    .Select(a => a.RoleId).Distinct().ToArray();
+
+                var destekEkipRolId = userRoleId.Where(m => m == 11).FirstOrDefault(); //destek ekiip rolId 11
+
+                return new LoginUser
+                {
+                    Id = user.Id,
+                    Name = user.Name,
+                    Image = user.Photo,
+                    Surname = user.Surname,
+                    WorkYear = user.WorkYear,
+                    IpAddress = ipAdress,
+                    HostName = _UserRepository.GetHostName(ipAdress),
+                    SicilId = user.SicilId,
+                    UserRolId = destekEkipRolId != 0 ? destekEkipRolId : userRoleId.FirstOrDefault()
+                };
+            }
+
+            return null;
+        }
+
+
         /// <summary>
         /// Yeni User kaydını oluşturur.
         /// </summary>
@@ -55,6 +166,10 @@ namespace API.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            val.Password = _UserRepository.PasswordHash(val.Password);
+            val.WorkYear = DateTime.Now.Year;
+            val.FullName = val.Name + " " + val.Surname;
 
             var res = new DTO.Shared.DataAccessResult<object>();
 

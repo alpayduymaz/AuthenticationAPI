@@ -28,7 +28,7 @@ namespace BLL.EntityCore.Concrete
             _configuration = configuration;
             _userRoleRepository = userRoleRepository;
         }
-
+        
         /// <summary>
         /// Web kullanıcıları için süreli token oluşturur.
         /// </summary>

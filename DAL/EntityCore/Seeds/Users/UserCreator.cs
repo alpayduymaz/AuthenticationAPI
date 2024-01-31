@@ -11,6 +11,7 @@ namespace DAL.EntityCore.Seeds
 {
     public static class UserCreator
     {
+        
         public static readonly User SystemUser = new User
         {
             Id = 1,

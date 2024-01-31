@@ -1,7 +1,16 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\API",
+    "\\API\\Controllers",
+    "\\BLL",
+    "\\BLL\\EntityCore",
+    "\\BLL\\EntityCore\\Concrete",
+    "\\DAL",
+    "\\DAL\\EntityCore",
+    "\\DAL\\EntityCore\\Seeds",
+    "\\DAL\\EntityCore\\Seeds\\Users"
   ],
-  "SelectedNode": "\\AuthenticationAPI.sln",
+  "SelectedNode": "\\API\\Controllers\\UserController.cs",
   "PreviewInSolutionExplorer": false
 }

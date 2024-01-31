@@ -11,6 +11,7 @@ namespace DAL.EntityCore.Seeds.Users
 {
     public static class RoleCreator
     {
+        
         public static void Create(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Role>().HasData(new Role[] {
